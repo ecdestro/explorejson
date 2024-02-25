@@ -1,0 +1,25 @@
+{
+  "toys": [
+    {
+      "name": "ECTO-1",
+      "manufacturer": "LEGO",
+      "tags": [
+        "car",
+        "creative",
+        "lego",
+        "movies"
+      ],
+      "id": "bd2fc8ed-f91c-43dd-9614-03dd0f3957ca"
+    },
+    {
+      "name": "Bat-Mobile",
+      "manufacturer": "Hot Wheels",
+      "tags": [
+        "car",
+        "hot wheels",
+        "comic books"
+      ],
+      "id": "2d636caf-c340-4445-8fd3-ad3ea03e63a0"
+    }
+  ]
+}
