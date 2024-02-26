@@ -15,7 +15,7 @@ body, html {
     border-right: 1px solid #ccc;
 }
 
-#sidebar li {
+#sidebar li { 
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     color: blue;
@@ -25,6 +25,6 @@ body, html {
     padding: 20px;
 }
 
-#main-content h2, #main-content label, h1 {
+#main-content h2, #main-content label, #sidebar h2, h1 {
     font-family: Arial, Helvetica, sans-serif;
 }
