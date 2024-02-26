@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
+const jquery = require('jquery');
 const app = express();
 const port = 3000;
 
@@ -69,7 +70,7 @@ app.post('/add-toy', (req, res) => {
 });
 
 app.delete('/delete-toy/:toyId', (req, res) => {
-    const toyId = parseInt(req.params.toyId);
+    const toyIDNum = req.params.toyId;
     const jsonDataPath = path.join(__dirname, 'data', 'toys.json');
     fs.readFile(jsonDataPath, 'utf8', (err, data) => {
         if (err) {
@@ -78,7 +79,7 @@ app.delete('/delete-toy/:toyId', (req, res) => {
             return;
         }
         let jsonData = JSON.parse(data);
-        const index = jsonData.toys.findIndex(toy => toy.id === toyId);
+        const index = jsonData.toys.findIndex(toy => toy.id === toyIDNum);
         if (index !== -1) {
             jsonData.toys.splice(index, 1);
             fs.writeFile(jsonDataPath, JSON.stringify(jsonData, null, 2), 'utf8', err => {
@@ -91,6 +92,7 @@ app.delete('/delete-toy/:toyId', (req, res) => {
         });
         } else {
             res.status(404).send('Toy not found');
+            // res.status(404).send(`index equals ${index}, ${toyIDNum}`);
         }
     });
 });

@@ -95,6 +95,7 @@ function saveChanges(toy) {
     .then(response => {
         if (response.ok) {
             console.log('Changes saved successfully');
+            window.location.reload();
         } else {
             console.error('Failed to save changes');
         }
@@ -205,6 +206,7 @@ function saveNewToy() {
         .then(response => {
             if (response.ok) {
                 console.log('New toy added successfully');
+                window.location.reload();
             } else {
                 console.error('Failed to add new toy');
             }
