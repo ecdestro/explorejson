@@ -3,7 +3,11 @@ body, html {
     margin: 0;
 }
 
-li, h1, h2, label {
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#sidebar li, h2, label {
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -12,14 +16,18 @@ li, h1, h2, label {
     height: 100%;
 }
 
-.sidebar {
+#sidebar {
     flex: 0 0 25%;
     background-color: #f0f0f0;
     padding: 20px;
     border-right: 1px solid #ccc;
 }
 
-.main-content {
+#main-content {
     flex: 1;
     padding: 20px;
+}
+
+#main-content h2, label {
+    font-family: Arial, Helvetica, sans-serif;
 }

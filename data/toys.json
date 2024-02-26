@@ -20,6 +20,16 @@
         "comic books"
       ],
       "id": "2d636caf-c340-4445-8fd3-ad3ea03e63a0"
+    },
+    {
+      "name": "Proton Pack",
+      "manufacturer": "Hasbro",
+      "tags": [
+        "costume",
+        "prop",
+        "movies"
+      ],
+      "id": "42782d65-4c0d-4011-a69b-051646d1be0d"
     }
   ]
 }

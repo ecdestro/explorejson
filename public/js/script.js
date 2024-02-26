@@ -1,15 +1,42 @@
+//function generateJSONTree(data) {
+//    const jsonTree = document.getElementById("json-tree");
+//    data.toys.forEach(toy => {
+//        const listItem = document.createElement("li");
+//        listItem.textContent = `${toy.name} - ${toy.manufacturer}`;
+//
+//        listItem.setAttribute("data-id", toy.id);
+//        listItem.addEventListener("click", () => {
+//            displayToyDetails(toy);
+//        });
+//        jsonTree.appendChild(listItem);
+//    });
+//}
+
 function generateJSONTree(data) {
-    const jsonTree = document.getElementById("json-tree");
+    const sidebar = document.getElementById("sidebar")
+    sidebar.innerHTML = ``;
+
+    const header2 = document.createElement("h2");
+    header2.textContent = "JSON Objects";
+    sidebar.appendChild(header2);
+    const uList = document.createElement("ul");
+    uList.setAttribute("id", "json-tree");
+    sidebar.appendChild(uList);
+
     data.toys.forEach(toy => {
         const listItem = document.createElement("li");
         listItem.textContent = `${toy.name} - ${toy.manufacturer}`;
-
         listItem.setAttribute("data-id", toy.id);
         listItem.addEventListener("click", () => {
             displayToyDetails(toy);
         });
-        jsonTree.appendChild(listItem);
+        uList.appendChild(listItem);
     });
+    const addButton = document.createElement("button");
+    addButton.setAttribute("id", "add-toy-button");
+    addButton.textContent = "Add Toy";
+    sidebar.appendChild(addButton);
+    addButton.addEventListener("click", displayAddToyForm);
 }
 
 function displayToyDetails(toy) {
@@ -17,7 +44,7 @@ function displayToyDetails(toy) {
     detailsContainer.innerHTML = ``;
 
     const header2 = document.createElement("h2");
-    header2.innerHTML = "Object Details";
+    header2.textContent = "Object Details";
     detailsContainer.appendChild(header2);
     
     for (const key in toy) {
@@ -94,8 +121,8 @@ function deleteToy(toyId) {
     });
 }
 
-const addButton = document.getElementById("add-toy-button");
-addButton.addEventListener("click", displayAddToyForm);
+// const addButton = document.getElementById("add-toy-button");
+// addButton.addEventListener("click", displayAddToyForm);
 
 function displayAddToyForm() {
     const detailsContainer = document.getElementById("main-content");
@@ -110,7 +137,7 @@ function displayAddToyForm() {
     
     const nameLabel = document.createElement("label");
     nameLabel.setAttribute("for", "name");
-    nameLabel.innerHTML = "Name: "
+    nameLabel.textContent = "Name: "
     const nameInput = document.createElement("input");
     nameInput.setAttribute("type", "text");
     nameInput.setAttribute("id", "name");
@@ -118,7 +145,7 @@ function displayAddToyForm() {
 
     const makeLabel = document.createElement("label");
     makeLabel.setAttribute("for", "manufacturer");
-    makeLabel.innerHTML = "Manufacturer: ";
+    makeLabel.textContent = "Manufacturer: ";
     const makeInput = document.createElement("input");
     makeInput.setAttribute("type", "text");
     makeInput.setAttribute("id", "manufacturer");
@@ -126,7 +153,7 @@ function displayAddToyForm() {
 
     const tagsLabel = document.createElement("label");
     tagsLabel.setAttribute("for", "tags");
-    tagsLabel.innerHTML = "Tags (comma-separated): ";
+    tagsLabel.textContent = "Tags (comma-separated): ";
     const tagsInput = document.createElement("input");
     tagsInput.setAttribute("type", "text");
     tagsInput.setAttribute("id", "tags");
