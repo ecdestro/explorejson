@@ -30,6 +30,12 @@
         "movies"
       ],
       "id": "42782d65-4c0d-4011-a69b-051646d1be0d"
+    },
+    {
+      "name": "Burnt Doll",
+      "manufacturer": "Fireplace",
+      "tags": "fixed,healed,burn unit",
+      "id": "f5e4a4ff-f0f3-46ec-b4a0-2169040c97c1"
     }
   ]
 }
