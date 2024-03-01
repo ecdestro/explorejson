@@ -1,88 +1,69 @@
-//function generateJSONTree(data) {
-//    const jsonTree = document.getElementById("json-tree");
-//    data.toys.forEach(toy => {
-//        const listItem = document.createElement("li");
-//        listItem.textContent = `${toy.name} - ${toy.manufacturer}`;
-//
-//        listItem.setAttribute("data-id", toy.id);
-//        listItem.addEventListener("click", () => {
-//            displayToyDetails(toy);
-//        });
-//        jsonTree.appendChild(listItem);
-//    });
-//}
+$(document).ready(function() {
+    fetch('/data/toys.json')
+        .then(response => response.json())
+        .then(jsonData => {
+            generateJSONTree(jsonData);
+        })
+        .catch(error => {
+            console.error('Error fetching JSON data:', error);
+        });
+});
 
 function generateJSONTree(data) {
-    const sidebar = document.getElementById("sidebar")
-    sidebar.innerHTML = ``;
+    const sidebar = $("#sidebar");
+    sidebar.empty();
 
-    const header2 = document.createElement("h2");
-    header2.textContent = "JSON Objects";
-    sidebar.appendChild(header2);
-    const uList = document.createElement("ul");
-    uList.setAttribute("id", "json-tree");
-    sidebar.appendChild(uList);
+    const header2 = $("<h2>").text("JSON Objects");
+    sidebar.append(header2);
+    const uList = $("<ul>").attr("id", "json-tree");
+    sidebar.append(uList);
 
     data.toys.forEach(toy => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${toy.name} - ${toy.manufacturer}`;
-        listItem.setAttribute("data-id", toy.id);
-        listItem.addEventListener("click", () => {
+        const listItem = $("<li>").text(`${toy.name} - ${toy.manufacturer}`).attr("data-id", toy.id);
+        listItem.on("click", () => {
             displayToyDetails(toy);
         });
-        uList.appendChild(listItem);
     });
-    const addButton = document.createElement("button");
-    addButton.setAttribute("id", "add-toy-button");
-    addButton.textContent = "Add Toy";
-    sidebar.appendChild(addButton);
-    addButton.addEventListener("click", displayAddToyForm);
+    const addButton = $("<button>").attr("id", "add-toy-button").text("Add Toy");
+    sidebar.append(addButton);
+    addButton.on("click", displayAddToyForm);
 }
 
 function displayToyDetails(toy) {
-    const detailsContainer = document.getElementById("main-content");
-    detailsContainer.innerHTML = ``;
+    const detailsContainer = $("#main.content");
+    detailsContainer.empty();
 
-    const header2 = document.createElement("h2");
-    header2.textContent = "Object Details";
-    detailsContainer.appendChild(header2);
-    
+    const header2 = $("<h2>").text("Object Details");
+    detailsContainer.append(header2);
+
     for (const key in toy) {
-        if (toy.hasOwnProperty(key)) {
-            const inputLabel = document.createElement("label");
-            inputLabel.textContent = key + ": ";
-            const inputField = document.createElement("input");
-            inputField.setAttribute("type", "text");
-            inputField.setAttribute("id", key);
-            inputField.value = toy[key];
-
-            detailsContainer.appendChild(inputLabel);
-            detailsContainer.appendChild(inputField);
-            detailsContainer.appendChild(document.createElement("br"));
+        if(toy.hasOwnProperty(key)) {
+            const inputLabel = $("<label>").text(key + ": ");
+            const inputField = $("<input>").attr("type", "text").attr("id", key).val(toy[key]);
+            detailsContainer.append(inputLabel);
+            detailsContainer.append(inputField);
+            detailsContainer.append($("<br />"));
         }
     }
 
-    const saveButton = document.createElement("button");
-    saveButton.textContent = "Save Changes";
-    saveButton.addEventListener("click", function() {
+    const saveButton = $("<button>").text("Save Changes");
+    saveButton.on("click", function() {
         saveChanges(toy);
     });
-    detailsContainer.appendChild(saveButton);
+    detailsContainer.append(saveButton);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete Toy";
-    deleteButton.addEventListener("click", function() {
+    const deleteButton = $("<button>").text("Delete Toy");
+    deleteButton.on("click", function() {
         deleteToy(toy.id);
     });
-    detailsContainer.appendChild(deleteButton);
 }
 
 function saveChanges(toy) {
     const updatedToy = {};
     for (const key in toy) {
         if (toy.hasOwnProperty(key)) {
-            const inputField = document.getElementById(key);
-            updatedToy[key] = inputField.value;
+            const inputField = $("#" + key);
+            updatedToy[key] = inputField.val();
         }
     }
     fetch('/update-toy', {
@@ -92,106 +73,71 @@ function saveChanges(toy) {
         },
         body: JSON.stringify(updatedToy)
     })
-    .then(response => {
-        if (response.ok) {
-            console.log('Changes saved successfully');
-            window.location.reload();
-        } else {
-            console.error('Failed to save changes');
-        }
-    })
-    .catch(error => {
-        console.error('Error saving changes:', error);
-    });
+        .then(response => {
+            if (response.ok) {
+                console.log('Changes saved successfully');
+                window.location.reload();
+            } else {
+                console.error('Failed to save changes');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving changes:', error);
+        });
 }
 
 function deleteToy(toyId) {
-    fetch(`/delete-toy/${toyId}`, {
+    fetch(`/delete-toy/${toy.id}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        if (response.ok) {
-            console.log('Toy deleted successfully');
-            window.location.reload();
-        } else {
-            console.error('Failed to delete toy');
-        }
-    })
-    .catch(error => {
-        console.error('Error deleting toy', error);
-    });
+        .then(response => {
+            if (response.ok) {
+                console.log('Toy deleted successfully');
+                window.location.reload();
+            } else {
+                console.error('Failed to delete toy');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting toy:', error);
+        });
 }
 
-// const addButton = document.getElementById("add-toy-button");
-// addButton.addEventListener("click", displayAddToyForm);
-
 function displayAddToyForm() {
-    const detailsContainer = document.getElementById("main-content");
-    detailsContainer.innerHTML = ``;
-   
-    const header2 = document.createElement("h2");
-    header2.innerHTML = "Add New Object";
-    detailsContainer.appendChild(header2);
+    const detailsContainer = $("#main-content");
+    detailsContainer.empty();
 
-    const newForm = document.createElement("form");
-    newForm.setAttribute("id", "add-toy-form");
+    const header2 = $("<h2>").text("Add New Object");
+    detailsContainer.append(header2);
+
+    const newForm = $("<form>").attr("id", "add-toy-form");
     
-    const nameLabel = document.createElement("label");
-    nameLabel.setAttribute("for", "name");
-    nameLabel.textContent = "Name: "
-    const nameInput = document.createElement("input");
-    nameInput.setAttribute("type", "text");
-    nameInput.setAttribute("id", "name");
-    nameInput.setAttribute("name", "name");
+    const nameLabel = $("<label>").attr("for", "name").text("Name: ");
+    const nameInput = $("<input>").attr("type", "text").attr("id", "name").attr("name", "name");
+    const makeLabel = $("<label>").attr("for", "manufacturer").text("Manufacturer: ");
+    const makeInput = $("<input>").attr("type", "text").attr("id", "manufacturer").attr("name", "manufacturer");
+    const tagsLabel = $("<label>").attr("for", "tags").text("Tags (comma-separated): ");
+    const tagsInput = $("<input>").attr("type", "text").attr("id", "tags").attr("name", "tags");
 
-    const makeLabel = document.createElement("label");
-    makeLabel.setAttribute("for", "manufacturer");
-    makeLabel.textContent = "Manufacturer: ";
-    const makeInput = document.createElement("input");
-    makeInput.setAttribute("type", "text");
-    makeInput.setAttribute("id", "manufacturer");
-    makeInput.setAttribute("name", "manufacturer");
+    detailsContainer.append(newForm);
+    newForm.append(nameLabel).append(nameInput).append($("<br />"));
+    newForm.append(makeLabel).append(makeInput).append($("<br />"));
+    newForm.append(tagsLabel).append(tagsInput).append($("<br />"));
 
-    const tagsLabel = document.createElement("label");
-    tagsLabel.setAttribute("for", "tags");
-    tagsLabel.textContent = "Tags (comma-separated): ";
-    const tagsInput = document.createElement("input");
-    tagsInput.setAttribute("type", "text");
-    tagsInput.setAttribute("id", "tags");
-    tagsInput.setAttribute("name", "tags");
-
-    detailsContainer.appendChild(newForm);
-    newForm.appendChild(nameLabel);
-    newForm.appendChild(nameInput);
-    newForm.appendChild(document.createElement("br"));
-    newForm.appendChild(makeLabel);
-    newForm.appendChild(makeInput);
-    newForm.appendChild(document.createElement("br"));
-    newForm.appendChild(tagsLabel);
-    newForm.appendChild(tagsInput);
-    newForm.appendChild(document.createElement("br"));
-
-    const saveNew = document.createElement("button");
-    saveNew.textContent = "Save New Toy";
-
-    newForm.appendChild(saveNew);
-
-    newForm.reset();
-
-    newForm.addEventListener("submit", (event) => {
+    const saveNew = $("<button>").text("Save New Toy");
+    newForm.append(saveNew);
+    newForm.on("submit", (event) => {
         event.preventDefault();
         saveNewToy();
-        newForm.reset();
+        newForm[0].reset();
     });
 }
 
 function saveNewToy() {
-    // const id = document.getElementById("id").value;
-    const name = document.getElementById("name").value;
-    const manufacturer = document.getElementById("manufacturer").value;
-    const tags = document.getElementById("tags").value.split(",").map(tag => tag.trim());
+    const name = $("#name").val();
+    const manufacturer = $("#manufacturer").val();
+    const tags = $("#tags").val().split(",").map(tag => tag.trim());
     const newToy = {
-        // id: id,
         name: name,
         manufacturer: manufacturer,
         tags: tags
@@ -215,14 +161,3 @@ function saveNewToy() {
             console.error('Error adding new toy:', error);
         });
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    fetch('/data/toys.json')
-        .then(response => response.json())
-        .then(jsonData => {
-            generateJSONTree(jsonData);
-        })
-        .catch(error => {
-            console.error('Error fetching JSON data:', error);
-        });
-});

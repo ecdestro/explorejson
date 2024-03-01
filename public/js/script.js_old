@@ -1,0 +1,214 @@
+function generateJSONTree(data) {
+    const sidebar = document.getElementById("sidebar")
+    sidebar.innerHTML = ``;
+
+    const header2 = document.createElement("h2");
+    header2.textContent = "JSON Objects";
+    sidebar.appendChild(header2);
+    const uList = document.createElement("ul");
+    uList.setAttribute("id", "json-tree");
+    sidebar.appendChild(uList);
+
+    data.toys.forEach(toy => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${toy.name} - ${toy.manufacturer}`;
+        listItem.setAttribute("data-id", toy.id);
+        listItem.addEventListener("click", () => {
+            displayToyDetails(toy);
+        });
+        uList.appendChild(listItem);
+    });
+    const addButton = document.createElement("button");
+    addButton.setAttribute("id", "add-toy-button");
+    addButton.textContent = "Add Toy";
+    sidebar.appendChild(addButton);
+    addButton.addEventListener("click", displayAddToyForm);
+}
+
+function displayToyDetails(toy) {
+    const detailsContainer = document.getElementById("main-content");
+    detailsContainer.innerHTML = ``;
+
+    const header2 = document.createElement("h2");
+    header2.textContent = "Object Details";
+    detailsContainer.appendChild(header2);
+    
+    for (const key in toy) {
+        if (toy.hasOwnProperty(key)) {
+            const inputLabel = document.createElement("label");
+            inputLabel.textContent = key + ": ";
+            const inputField = document.createElement("input");
+            inputField.setAttribute("type", "text");
+            inputField.setAttribute("id", key);
+            inputField.value = toy[key];
+
+            detailsContainer.appendChild(inputLabel);
+            detailsContainer.appendChild(inputField);
+            detailsContainer.appendChild(document.createElement("br"));
+        }
+    }
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save Changes";
+    saveButton.addEventListener("click", function() {
+        saveChanges(toy);
+    });
+    detailsContainer.appendChild(saveButton);
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete Toy";
+    deleteButton.addEventListener("click", function() {
+        deleteToy(toy.id);
+    });
+    detailsContainer.appendChild(deleteButton);
+}
+
+function saveChanges(toy) {
+    const updatedToy = {};
+    for (const key in toy) {
+        if (toy.hasOwnProperty(key)) {
+            const inputField = document.getElementById(key);
+            updatedToy[key] = inputField.value;
+        }
+    }
+    fetch('/update-toy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedToy)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Changes saved successfully');
+            window.location.reload();
+        } else {
+            console.error('Failed to save changes');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving changes:', error);
+    });
+}
+
+function deleteToy(toyId) {
+    fetch(`/delete-toy/${toyId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Toy deleted successfully');
+            window.location.reload();
+        } else {
+            console.error('Failed to delete toy');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting toy', error);
+    });
+}
+
+// const addButton = document.getElementById("add-toy-button");
+// addButton.addEventListener("click", displayAddToyForm);
+
+function displayAddToyForm() {
+    const detailsContainer = document.getElementById("main-content");
+    detailsContainer.innerHTML = ``;
+   
+    const header2 = document.createElement("h2");
+    header2.innerHTML = "Add New Object";
+    detailsContainer.appendChild(header2);
+
+    const newForm = document.createElement("form");
+    newForm.setAttribute("id", "add-toy-form");
+    
+    const nameLabel = document.createElement("label");
+    nameLabel.setAttribute("for", "name");
+    nameLabel.textContent = "Name: "
+    const nameInput = document.createElement("input");
+    nameInput.setAttribute("type", "text");
+    nameInput.setAttribute("id", "name");
+    nameInput.setAttribute("name", "name");
+
+    const makeLabel = document.createElement("label");
+    makeLabel.setAttribute("for", "manufacturer");
+    makeLabel.textContent = "Manufacturer: ";
+    const makeInput = document.createElement("input");
+    makeInput.setAttribute("type", "text");
+    makeInput.setAttribute("id", "manufacturer");
+    makeInput.setAttribute("name", "manufacturer");
+
+    const tagsLabel = document.createElement("label");
+    tagsLabel.setAttribute("for", "tags");
+    tagsLabel.textContent = "Tags (comma-separated): ";
+    const tagsInput = document.createElement("input");
+    tagsInput.setAttribute("type", "text");
+    tagsInput.setAttribute("id", "tags");
+    tagsInput.setAttribute("name", "tags");
+
+    detailsContainer.appendChild(newForm);
+    newForm.appendChild(nameLabel);
+    newForm.appendChild(nameInput);
+    newForm.appendChild(document.createElement("br"));
+    newForm.appendChild(makeLabel);
+    newForm.appendChild(makeInput);
+    newForm.appendChild(document.createElement("br"));
+    newForm.appendChild(tagsLabel);
+    newForm.appendChild(tagsInput);
+    newForm.appendChild(document.createElement("br"));
+
+    const saveNew = document.createElement("button");
+    saveNew.textContent = "Save New Toy";
+
+    newForm.appendChild(saveNew);
+
+    newForm.reset();
+
+    newForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        saveNewToy();
+        newForm.reset();
+    });
+}
+
+function saveNewToy() {
+    // const id = document.getElementById("id").value;
+    const name = document.getElementById("name").value;
+    const manufacturer = document.getElementById("manufacturer").value;
+    const tags = document.getElementById("tags").value.split(",").map(tag => tag.trim());
+    const newToy = {
+        // id: id,
+        name: name,
+        manufacturer: manufacturer,
+        tags: tags
+    };
+    fetch('/add-toy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newToy)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('New toy added successfully');
+                window.location.reload();
+            } else {
+                console.error('Failed to add new toy');
+            }
+        })
+        .catch(error => {
+            console.error('Error adding new toy:', error);
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/data/toys.json')
+        .then(response => response.json())
+        .then(jsonData => {
+            generateJSONTree(jsonData);
+        })
+        .catch(error => {
+            console.error('Error fetching JSON data:', error);
+        });
+});
