@@ -20,6 +20,7 @@ function generateJSONTree(data) {
 
     data.toys.forEach(toy => {
         const listItem = $("<li>").text(`${toy.name} - ${toy.manufacturer}`).attr("data-id", toy.id);
+        uList.append(listItem);
         listItem.on("click", () => {
             displayToyDetails(toy);
         });
@@ -30,7 +31,7 @@ function generateJSONTree(data) {
 }
 
 function displayToyDetails(toy) {
-    const detailsContainer = $("#main.content");
+    const detailsContainer = $("#main-content");
     detailsContainer.empty();
 
     const header2 = $("<h2>").text("Object Details");
@@ -56,6 +57,7 @@ function displayToyDetails(toy) {
     deleteButton.on("click", function() {
         deleteToy(toy.id);
     });
+    detailsContainer.append(deleteButton);
 }
 
 function saveChanges(toy) {
@@ -87,7 +89,7 @@ function saveChanges(toy) {
 }
 
 function deleteToy(toyId) {
-    fetch(`/delete-toy/${toy.id}`, {
+    fetch(`/delete-toy/${toyId}`, {
         method: 'DELETE'
     })
         .then(response => {

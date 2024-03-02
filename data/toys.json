@@ -33,9 +33,23 @@
     },
     {
       "name": "Burnt Doll",
-      "manufacturer": "Fireplace",
-      "tags": "fixed,healed,burn unit",
-      "id": "f5e4a4ff-f0f3-46ec-b4a0-2169040c97c1"
+      "manufacturer": "Fire",
+      "tags": [
+        "charred",
+        "fire",
+        "doll"
+      ],
+      "id": "f6c54f8b-a884-4ac5-b2a7-fd90b4a61d72"
+    },
+    {
+      "name": "Testfire",
+      "manufacturer": "Test",
+      "tags": [
+        "testing1",
+        "testing2",
+        "testing3"
+      ],
+      "id": "4757d484-de05-45ee-8c21-2d26952000e1"
     }
   ]
 }
