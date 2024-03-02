@@ -1,12 +1,9 @@
 $(document).ready(function() {
-    fetch('/data/toys.json')
-        .then(response => response.json())
-        .then(jsonData => {
-            generateJSONTree(jsonData);
-        })
-        .catch(error => {
-            console.error('Error fetching JSON data:', error);
-        });
+    $.getJSON('/data/toys.json', function(data) {
+        generateJSONTree(data);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching JSON data:', errorThrown);
+    });
 });
 
 function generateJSONTree(data) {
@@ -68,41 +65,33 @@ function saveChanges(toy) {
             updatedToy[key] = inputField.val();
         }
     }
-    fetch('/update-toy', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    $.ajax({
+        url: '/update-toy',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(updatedToy),
+        success: function(response) {
+            console.log('Changed saved successfully');
+            window.location.reload();
         },
-        body: JSON.stringify(updatedToy)
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log('Changes saved successfully');
-                window.location.reload();
-            } else {
-                console.error('Failed to save changes');
-            }
-        })
-        .catch(error => {
-            console.error('Error saving changes:', error);
-        });
+        error: function(xhr, status, error) {
+            console.error('Failed to save changes');
+        }
+    });
 }
 
 function deleteToy(toyId) {
-    fetch(`/delete-toy/${toyId}`, {
-        method: 'DELETE'
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log('Toy deleted successfully');
-                window.location.reload();
-            } else {
-                console.error('Failed to delete toy');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting toy:', error);
-        });
+    $.ajax({
+        url: `/delete-toy/${toyId}`,
+        type: 'DELETE',
+        success: function(response) {
+            console.log('Toy deleted successfully');
+            window.location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Failed to delete toy');
+        }
+    });
 }
 
 function displayAddToyForm() {
@@ -144,22 +133,17 @@ function saveNewToy() {
         manufacturer: manufacturer,
         tags: tags
     };
-    fetch('/add-toy', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    $.ajax({
+        url: '/add-toy',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(newToy),
+        success: function(response) {
+            console.log('Toy added successfully');
+            window.location.reload();
         },
-        body: JSON.stringify(newToy)
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('New toy added successfully');
-                window.location.reload();
-            } else {
-                console.error('Failed to add new toy');
-            }
-        })
-        .catch(error => {
-            console.error('Error adding new toy:', error);
-        });
+        error: function(xhr, status, error) {
+            console.error('Failed to add toy');
+        }
+    });
 }

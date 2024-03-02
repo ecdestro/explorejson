@@ -32,24 +32,13 @@
       "id": "42782d65-4c0d-4011-a69b-051646d1be0d"
     },
     {
-      "name": "Burnt Doll",
-      "manufacturer": "Fire",
+      "name": "Solare",
+      "manufacturer": "FROM SOFTWARE",
       "tags": [
-        "charred",
-        "fire",
-        "doll"
+        "action figure",
+        "video games"
       ],
-      "id": "f6c54f8b-a884-4ac5-b2a7-fd90b4a61d72"
-    },
-    {
-      "name": "Testfire",
-      "manufacturer": "Test",
-      "tags": [
-        "testing1",
-        "testing2",
-        "testing3"
-      ],
-      "id": "4757d484-de05-45ee-8c21-2d26952000e1"
+      "id": "1938bd72-ce66-499d-bc3e-2297f1153f31"
     }
   ]
 }
