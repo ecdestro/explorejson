@@ -92,7 +92,6 @@ app.delete('/delete-toy/:toyId', (req, res) => {
         });
         } else {
             res.status(404).send('Toy not found');
-            // res.status(404).send(`index equals ${index}, ${toyIDNum}`);
         }
     });
 });
