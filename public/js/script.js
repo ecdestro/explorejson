@@ -1,12 +1,16 @@
 $(document).ready(function() {
+    reloadSidebar();
+});
+
+function reloadSidebar() {
     $.getJSON('/data/toys.json', function(data) {
-        generateJSONTree(data);
+        generateJSONTree(data.toys);
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error('Error fetching JSON data:', errorThrown);
     });
-});
+}
 
-function generateJSONTree(data) {
+function generateJSONTree(toys) {
     const sidebar = $("#sidebar");
     sidebar.empty();
 
@@ -15,7 +19,7 @@ function generateJSONTree(data) {
     const uList = $("<ul>").attr("id", "json-tree");
     sidebar.append(uList);
 
-    data.toys.forEach(toy => {
+    toys.forEach(toy => {
         const listItem = $("<li>").text(`${toy.name} - ${toy.manufacturer}`).attr("data-id", toy.id);
         uList.append(listItem);
         listItem.on("click", () => {
@@ -72,7 +76,7 @@ function saveChanges(toy) {
         data: JSON.stringify(updatedToy),
         success: function(response) {
             console.log('Changed saved successfully');
-            window.location.reload();
+            reloadSidebar();
         },
         error: function(xhr, status, error) {
             console.error('Failed to save changes');
@@ -86,7 +90,7 @@ function deleteToy(toyId) {
         type: 'DELETE',
         success: function(response) {
             console.log('Toy deleted successfully');
-            window.location.reload();
+            reloadSidebar();
         },
         error: function(xhr, status, error) {
             console.error('Failed to delete toy');
@@ -119,7 +123,9 @@ function displayAddToyForm() {
     newForm.append(saveNew);
     newForm.on("submit", (event) => {
         event.preventDefault();
-        saveNewToy();
+        saveNewToy().then(() => {
+            reloadSidebar();
+        });
         newForm[0].reset();
     });
 }
@@ -140,7 +146,7 @@ function saveNewToy() {
         data: JSON.stringify(newToy),
         success: function(response) {
             console.log('Toy added successfully');
-            window.location.reload();
+            reloadSidebar();
         },
         error: function(xhr, status, error) {
             console.error('Failed to add toy');
